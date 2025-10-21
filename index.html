@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahajana Sampatha 🎟️</title>
+    <link href="./tailwind.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+</head>
+<body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div id="app" class="h-full flex flex-col">
+        <!-- Top Navigation -->
+        <nav class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center transition-colors duration-300">
+            <div class="flex items-center space-x-4">
+                <button id="sidebarToggle" class="lg:hidden text-gray-600 dark:text-gray-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">M</div>
+                    <h1 class="text-xl font-bold text-gray-800 dark:text-white">Mahajana Sampatha</h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <!-- Theme Toggle -->
+                <div class="relative">
+                    <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300">
+                        <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path id="themeIconPath" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Profile/Connect Button -->
+                <div id="profileSection" class="hidden">
+                    <button id="profileBtn" class="flex items-center space-x-2 p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">U</div>
+                        <span id="userName" class="hidden md:block">User</span>
+                    </button>
+                </div>
+                
+                <div id="connectSection">
+                    <button id="connectDriveBtn" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 transition-colors duration-300">
+                        Connect Drive
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Sidebar -->
+            <aside id="sidebar" class="bg-white dark:bg-gray-800 w-64 shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-300 fixed lg:relative h-full z-30">
+                <div class="p-6 h-full flex flex-col">
+                    <nav class="space-y-2 flex-1">
+                        <a href="#home" class="nav-link active" data-page="home">
+                            <span>🏠</span>
+                            <span>Users List</span>
+                        </a>
+                        <a href="#profile" class="nav-link" data-page="profile">
+                            <span>👤</span>
+                            <span>Profile</span>
+                        </a>
+                        <a href="#admin" class="nav-link" data-page="admin">
+                            <span>🧑‍💼</span>
+                            <span>Admin</span>
+                        </a>
+                        <a href="#history" class="nav-link" data-page="history">
+                            <span>📜</span>
+                            <span>History</span>
+                        </a>
+                        <a href="#settings" class="nav-link" data-page="settings">
+                            <span>⚙️</span>
+                            <span>Settings</span>
+                        </a>
+                    </nav>
+                    
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                            <div>Connected: <span id="connectionStatus" class="font-medium">No</span></div>
+                            <div>Users: <span id="usersCount" class="font-medium">0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 overflow-auto p-6 bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+                <!-- Login/Connect Page -->
+                <div id="loginPage" class="page active flex items-center justify-center min-h-full">
+                    <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 transition-all duration-300 transform hover:scale-[1.02]">
+                        <div class="text-center mb-8">
+                            <div class="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4 animate-pulse">M</div>
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Mahajana Sampatha</h2>
+                            <p class="text-gray-600 dark:text-gray-400">Connect your Google Drive to sync your data securely</p>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <button id="loginConnectDrive" class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-3 transition-colors duration-300 flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M21.35,11.1H12.18V13.83H18.69C18.36,17.64 15.19,19.27 12.19,19.27C8.36,19.27 5,16.25 5,12C5,7.9 8.2,4.73 12.2,4.73C15.29,4.73 17.1,6.7 17.1,6.7L19,4.72C19,4.72 16.56,2 12.1,2C6.42,2 2.03,6.8 2.03,12C2.03,17.05 6.16,22 12.25,22C17.6,22 21.5,18.33 21.5,12.91C21.5,11.76 21.35,11.1 21.35,11.1V11.1Z"/>
+                                </svg>
+                                <span>Connect Google Drive</span>
+                            </button>
+                            
+                            <button id="loginContinueGuest" class="w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-xl px-4 py-3 transition-colors duration-300">
+                                Continue as Guest
+                            </button>
+                        </div>
+                        
+                        <div class="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                            <p>Your data is encrypted before syncing to Drive</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Home Page - Users List -->
+                <div id="homePage" class="page hidden">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Users List</h1>
+                        <p class="text-gray-600 dark:text-gray-400">Manage all betting participants</p>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6 transition-colors duration-300">
+                        <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Add New User</h2>
+                        <form id="addUserForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name</label>
+                                <input type="text" id="userFirstName" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bet Number</label>
+                                <input type="number" id="userBetNumber" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bet Amount</label>
+                                <input type="number" id="userBetAmount" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                            </div>
+                            <div class="md:col-span-3">
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 py-2 transition-colors duration-300">
+                                    Add User
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-colors duration-300">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
+                            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">All Users</h2>
+                            <div class="flex space-x-4">
+                                <div class="relative">
+                                    <input type="text" id="searchUsers" placeholder="Search users..." class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300 w-64">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <select id="sortUsers" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                                    <option value="number">Sort by Bet Number</option>
+                                    <option value="name">Sort by Name</option>
+                                    <option value="amount">Sort by Amount</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">#</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">Name</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">Bet Number</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">Bet Amount</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <!-- Users will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div id="emptyUsersState" class="text-center py-12">
+                            <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">No users yet</h3>
+                            <p class="text-gray-500 dark:text-gray-400">Add your first user to get started</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Page -->
+                <div id="profilePage" class="page hidden">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Profile</h1>
+                        <p class="text-gray-600 dark:text-gray-400">Manage your account settings</p>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-colors duration-300 max-w-2xl">
+                        <div class="flex items-center space-x-6 mb-8">
+                            <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-medium" id="profileAvatar">U</div>
+                            <div>
+                                <h2 class="text-xl font-semibold text-gray-800 dark:text-white" id="profileName">User Name</h2>
+                                <p class="text-gray-600 dark:text-gray-400" id="profileEmail">user@example.com</p>
+                            </div>
+                        </div>
+                        
+                        <form id="profileForm" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name</label>
+                                    <input type="text" id="profileFirstName" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
+                                    <input type="text" id="profileLastName" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                                <input type="email" id="profileEmailInput" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                            </div>
+                            
+                            <div id="adminToggleSection" class="hidden">
+                                <div class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+                                    <div>
+                                        <h3 class="text-sm font-medium text-gray-800 dark:text-white">Admin Status</h3>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Enable admin privileges</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="adminToggle" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="flex space-x-4 pt-4">
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 py-2 transition-colors duration-300">
+                                    Save Changes
+                                </button>
+                                <button type="button" id="resetProfileBtn" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-xl px-6 py-2 transition-colors duration-300">
+                                    Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Admin Page -->
+                <div id="adminPage" class="page hidden">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Admin Panel</h1>
+                        <p class="text-gray-600 dark:text-gray-400">Manage draw settings and select winners</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Draw Configuration -->
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-colors duration-300">
+                            <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Draw Configuration</h2>
+                            
+                            <form id="drawConfigForm" class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Min Bet Number</label>
+                                        <input type="number" id="minBetNumber" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Max Bet Number</label>
+                                        <input type="number" id="maxBetNumber" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Min Bet Amount</label>
+                                        <input type="number" id="minBetAmount" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Max Bet Amount</label>
+                                        <input type="number" id="maxBetAmount" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Winning Prize</label>
+                                    <input type="number" id="winningPrize" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                                </div>
+                                
+                                <div class="flex space-x-4 pt-2">
+                                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 py-2 transition-colors duration-300">
+                                        Publish Draw Range
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Draw Actions -->
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-colors duration-300">
+                            <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Draw Actions</h2>
+                            
+                            <div class="space-y-4">
+                                <div class="flex space-x-4">
+                                    <button id="selectWinnerBtn" class="bg-green-600 hover:bg-green-700 text-white rounded-xl px-6 py-2 transition-colors duration-300 flex-1">
+                                        Select Winning Number
+                                    </button>
+                                </div>
+                                
+                                <div id="winnerSection" class="hidden p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+                                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">Winner Selected!</h3>
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between">
+                                            <span class="text-blue-700 dark:text-blue-400">Winning Number:</span>
+                                            <span class="font-semibold text-blue-800 dark:text-blue-300" id="winnerNumber">-</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-blue-700 dark:text-blue-400">Winner Name:</span>
+                                            <span class="font-semibold text-blue-800 dark:text-blue-300" id="winnerName">-</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-blue-700 dark:text-blue-400">Prize Amount:</span>
+                                            <span class="font-semibold text-blue-800 dark:text-blue-300" id="winnerPrize">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                    <button id="finishDrawBtn" class="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-6 py-2 transition-colors duration-300 w-full">
+                                        Finish Draw
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Page -->
+                <div id="historyPage" class="page hidden">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Draw History</h1>
+                        <p class="text-gray-600 dark:text-gray-400">View past draws and winners</p>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-colors duration-300">
+                        <div id="emptyHistoryState" class="text-center py-12">
+                            <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">No history yet</h3>
+                            <p class="text-gray-500 dark:text-gray-400">Complete your first draw to see history here</p>
+                        </div>
+                        
+                        <div id="historyList" class="hidden space-y-4">
+                            <!-- History items will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="settingsPage" class="page hidden">
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Settings</h1>
+                        <p class="text-gray-600 dark:text-gray-400">Manage your application preferences</p>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 transition-colors duration-300 max-w-2xl">
+                        <div class="space-y-6">
+                            <!-- Drive Connection -->
+                            <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                                <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Google Drive Connection</h2>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-gray-600 dark:text-gray-400" id="driveStatusText">Not connected</p>
+                                    </div>
+                                    <div class="flex space-x-4">
+                                        <button id="connectDriveSettings" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 transition-colors duration-300">
+                                            Connect Drive
+                                        </button>
+                                        <button id="disconnectDrive" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-xl px-4 py-2 transition-colors duration-300">
+                                            Disconnect
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Data Management -->
+                            <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                                <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Data Management</h2>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-800 dark:text-white">Export Data</h3>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Download your data as JSON</p>
+                                        </div>
+                                        <button id="exportDataBtn" class="bg-green-600 hover:bg-green-700 text-white rounded-xl px-4 py-2 transition-colors duration-300">
+                                            Export
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-800 dark:text-white">Import Data</h3>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Upload JSON data file</p>
+                                        </div>
+                                        <div>
+                                            <input type="file" id="importDataFile" accept=".json" class="hidden">
+                                            <button id="importDataBtn" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 transition-colors duration-300">
+                                                Import
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h3 class="text-sm font-medium text-gray-800 dark:text-white">Clear All Data</h3>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Permanently delete all local data</p>
+                                        </div>
+                                        <button id="clearDataBtn" class="bg-red-600 hover:bg-red-700 text-white rounded-xl px-4 py-2 transition-colors duration-300">
+                                            Clear Data
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- App Info -->
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Application Information</h2>
+                                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <div class="flex justify-between">
+                                        <span>Version</span>
+                                        <span>1.0.0</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Last Sync</span>
+                                        <span id="lastSyncTime">Never</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Data Size</span>
+                                        <span id="dataSize">0 KB</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm"></div>
+
+    <!-- Modals -->
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 hidden transition-opacity duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-md transform transition-transform duration-300 scale-95 opacity-0">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Edit User</h3>
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name</label>
+                        <input type="text" id="editUserFirstName" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bet Number</label>
+                        <input type="number" id="editUserBetNumber" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bet Amount</label>
+                        <input type="number" id="editUserBetAmount" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                    </div>
+                </div>
+                <div class="flex space-x-4 mt-6">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 py-2 transition-colors duration-300 flex-1">
+                        Save Changes
+                    </button>
+                    <button type="button" id="cancelEditUser" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-xl px-4 py-2 transition-colors duration-300">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View History Details Modal -->
+    <div id="historyDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 hidden transition-opacity duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col transform transition-transform duration-300 scale-95 opacity-0">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Draw Details</h3>
+                <button id="closeHistoryDetails" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex-1 overflow-auto">
+                <div id="historyDetailsContent">
+                    <!-- History details will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <button id="fab" class="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-110 z-30 hidden">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+    </button>
+
+    <!-- Scripts -->
+    <script src="./utils.js"></script>
+    <script src="./drive.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>

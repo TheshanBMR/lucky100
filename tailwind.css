@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .nav-link {
+        @apply flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300;
+    }
+    
+    .nav-link.active {
+        @apply bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400;
+    }
+    
+    .page {
+        @apply transition-opacity duration-300;
+    }
+    
+    .page.active {
+        @apply block opacity-100;
+    }
+    
+    .page:not(.active) {
+        @apply hidden opacity-0;
+    }
+    
+    .toast {
+        @apply p-4 rounded-xl shadow-lg transform transition-all duration-300 translate-x-full;
+    }
+    
+    .toast.show {
+        @apply translate-x-0;
+    }
+    
+    .toast.success {
+        @apply bg-green-500 text-white;
+    }
+    
+    .toast.error {
+        @apply bg-red-500 text-white;
+    }
+    
+    .toast.info {
+        @apply bg-blue-500 text-white;
+    }
+    
+    .toast.warning {
+        @apply bg-yellow-500 text-white;
+    }
+    
+    .modal-content {
+        @apply transform transition-all duration-300 scale-95 opacity-0;
+    }
+    
+    .modal-content.show {
+        @apply scale-100 opacity-100;
+    }
+}
+
+@layer utilities {
+    .glass {
+        @apply bg-white bg-opacity-10 backdrop-blur-md border border-white border-opacity-20;
+    }
+}
