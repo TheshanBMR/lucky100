@@ -6,9 +6,6 @@
     <title>Lucky100 🎟️</title>
     <link href="./tailwind.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body class="h-full bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
     <div id="app" class="h-full flex flex-col">
@@ -332,7 +329,7 @@
                                 
                                 <!-- Current Participants -->
                                 <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
-                                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Participants</h3>
+                                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Participants (<span id="participantsCount">0</span>)</h3>
                                     <div id="participantsList" class="space-y-2 max-h-40 overflow-y-auto">
                                         <!-- Participants will be listed here -->
                                     </div>
@@ -491,7 +488,7 @@
     <!-- Modals -->
     <!-- Edit User Modal -->
     <div id="editUserModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 hidden transition-opacity duration-300">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-md transform transition-transform duration-300 scale-95 opacity-0">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-md transform transition-transform duration-300 scale-95 opacity-0 modal-content">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Edit User</h3>
             <form id="editUserForm">
                 <input type="hidden" id="editUserId">
@@ -523,7 +520,7 @@
 
     <!-- View History Details Modal -->
     <div id="historyDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 hidden transition-opacity duration-300">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col transform transition-transform duration-300 scale-95 opacity-0">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col transform transition-transform duration-300 scale-95 opacity-0 modal-content">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Draw Details</h3>
                 <button id="closeHistoryDetails" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
@@ -552,6 +549,4 @@
     <script src="./drive.js"></script>
     <script src="./script.js"></script>
 </body>
-
 </html>
-
