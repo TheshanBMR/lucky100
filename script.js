@@ -86,7 +86,7 @@ class MahajanaSampathaApp {
     // User Management
     addUser(userData) {
         // Check for duplicate bet numbers
-        if (this.users.some(user => user.betNumber === userData.betNumber)) {
+        if (this.users.some(user => user.betNumber === parseInt(userData.betNumber))) {
             this.showToast('Bet number already exists', 'error');
             return false;
         }
@@ -102,6 +102,7 @@ class MahajanaSampathaApp {
         this.users.push(user);
         this.saveToStorage();
         this.updateUsersTable();
+        this.updateParticipantsList();
         this.showToast('User added successfully', 'success');
         return true;
     }
@@ -111,7 +112,7 @@ class MahajanaSampathaApp {
         if (userIndex === -1) return false;
 
         // Check for duplicate bet numbers (excluding current user)
-        if (this.users.some(user => user.id !== userId && user.betNumber === userData.betNumber)) {
+        if (this.users.some(user => user.id !== userId && user.betNumber === parseInt(userData.betNumber))) {
             this.showToast('Bet number already exists', 'error');
             return false;
         }
@@ -125,6 +126,7 @@ class MahajanaSampathaApp {
 
         this.saveToStorage();
         this.updateUsersTable();
+        this.updateParticipantsList();
         this.showToast('User updated successfully', 'success');
         return true;
     }
@@ -133,6 +135,7 @@ class MahajanaSampathaApp {
         this.users = this.users.filter(user => user.id !== userId);
         this.saveToStorage();
         this.updateUsersTable();
+        this.updateParticipantsList();
         this.showToast('User deleted successfully', 'success');
     }
 
@@ -143,18 +146,24 @@ class MahajanaSampathaApp {
         this.showToast('Draw range published successfully', 'success');
     }
 
-    selectWinner() {
+    // Manual Winner Selection
+    selectWinnerManually(winningNumber) {
         if (this.users.length === 0) {
             this.showToast('No users to select winner from', 'error');
-            return;
+            return false;
         }
 
-        const winningNumber = Math.floor(Math.random() * (this.settings.maxBetNumber - this.settings.minBetNumber + 1)) + this.settings.minBetNumber;
-        const winner = this.users.find(user => user.betNumber === winningNumber);
+        // Validate winning number
+        if (!winningNumber || winningNumber < this.settings.minBetNumber || winningNumber > this.settings.maxBetNumber) {
+            this.showToast(`Please enter a valid winning number between ${this.settings.minBetNumber} and ${this.settings.maxBetNumber}`, 'error');
+            return false;
+        }
+
+        const winner = this.users.find(user => user.betNumber === parseInt(winningNumber));
 
         this.currentDraw = {
             id: Date.now().toString(),
-            winningNumber,
+            winningNumber: parseInt(winningNumber),
             winner: winner || null,
             prize: this.settings.winningPrize,
             totalUsers: this.users.length,
@@ -164,7 +173,38 @@ class MahajanaSampathaApp {
 
         this.saveToStorage();
         this.updateWinnerDisplay();
-        this.showToast(winner ? 'Winner selected!' : 'No winner for this number', winner ? 'success' : 'warning');
+        
+        if (winner) {
+            this.showToast(`Winner selected: ${winner.firstName} (Number: ${winningNumber})`, 'success');
+        } else {
+            this.showToast(`No winner found for number ${winningNumber}`, 'warning');
+        }
+        
+        return true;
+    }
+
+    // Select winner from user dropdown
+    selectWinnerFromUser(userId) {
+        const user = this.users.find(u => u.id === userId);
+        if (!user) {
+            this.showToast('User not found', 'error');
+            return false;
+        }
+
+        this.currentDraw = {
+            id: Date.now().toString(),
+            winningNumber: user.betNumber,
+            winner: user,
+            prize: this.settings.winningPrize,
+            totalUsers: this.users.length,
+            users: [...this.users],
+            createdAt: new Date().toISOString()
+        };
+
+        this.saveToStorage();
+        this.updateWinnerDisplay();
+        this.showToast(`Winner selected: ${user.firstName} (Number: ${user.betNumber})`, 'success');
+        return true;
     }
 
     finishDraw() {
@@ -179,6 +219,7 @@ class MahajanaSampathaApp {
         this.saveToStorage();
         
         this.updateUsersTable();
+        this.updateParticipantsList();
         this.updateHistoryDisplay();
         this.hideWinnerDisplay();
         this.showToast('Draw completed and moved to history', 'success');
@@ -253,16 +294,57 @@ class MahajanaSampathaApp {
         const winnerSection = document.getElementById('winnerSection');
         const winnerNumber = document.getElementById('winnerNumber');
         const winnerName = document.getElementById('winnerName');
+        const winnerBetAmount = document.getElementById('winnerBetAmount');
         const winnerPrize = document.getElementById('winnerPrize');
 
         winnerNumber.textContent = this.currentDraw.winningNumber.toString();
         winnerName.textContent = this.currentDraw.winner ? this.currentDraw.winner.firstName : 'No winner';
+        winnerBetAmount.textContent = this.currentDraw.winner ? `$${this.currentDraw.winner.betAmount.toFixed(2)}` : '-';
         winnerPrize.textContent = `$${this.currentDraw.prize.toFixed(2)}`;
         winnerSection.classList.remove('hidden');
     }
 
     hideWinnerDisplay() {
         document.getElementById('winnerSection').classList.add('hidden');
+    }
+
+    updateParticipantsList() {
+        const participantsList = document.getElementById('participantsList');
+        const selectFromUsers = document.getElementById('selectFromUsers');
+        const participantsCount = document.getElementById('participantsCount');
+        
+        // Clear existing lists
+        participantsList.innerHTML = '';
+        selectFromUsers.innerHTML = '<option value="">Select a participant</option>';
+        participantsCount.textContent = this.users.length.toString();
+        
+        if (this.users.length === 0) {
+            participantsList.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No participants yet</p>';
+            return;
+        }
+        
+        // Populate participants list
+        this.users.forEach(user => {
+            // Add to participants display
+            const participantElement = document.createElement('div');
+            participantElement.className = 'flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700 rounded-lg';
+            participantElement.innerHTML = `
+                <div class="flex-1">
+                    <div class="text-sm font-medium text-gray-800 dark:text-white">${user.firstName}</div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">Number: ${user.betNumber} | Amount: $${user.betAmount.toFixed(2)}</div>
+                </div>
+                <button onclick="app.selectWinnerFromUser('${user.id}')" class="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 text-sm font-medium ml-2">
+                    Select
+                </button>
+            `;
+            participantsList.appendChild(participantElement);
+            
+            // Add to dropdown
+            const option = document.createElement('option');
+            option.value = user.id;
+            option.textContent = `${user.firstName} (Number: ${user.betNumber}, Amount: $${user.betAmount.toFixed(2)})`;
+            selectFromUsers.appendChild(option);
+        });
     }
 
     updateHistoryDisplay() {
@@ -282,8 +364,8 @@ class MahajanaSampathaApp {
             <div class="bg-gray-50 dark:bg-gray-750 rounded-xl p-4 border border-gray-200 dark:border-gray-700 transition-colors duration-300 hover:shadow-md">
                 <div class="flex justify-between items-start mb-3">
                     <div>
-                        <h3 class="font-semibold text-gray-800 dark:text-white">Draw #${draw.id.slice(-6)}</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">${new Date(draw.createdAt).toLocaleDateString()}</p>
+                        <h3 class="font-semibold text-gray-800 dark:text-white">Draw ${new Date(draw.createdAt).toLocaleDateString()}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">ID: ${draw.id.slice(-6)}</p>
                     </div>
                     <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 rounded-full text-sm font-medium">
                         $${draw.prize.toFixed(2)}
@@ -304,7 +386,7 @@ class MahajanaSampathaApp {
                     </div>
                     <div class="md:text-right">
                         <button onclick="app.viewDrawDetails('${draw.id}')" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-300">
-                            View Details
+                            View Full Details
                         </button>
                     </div>
                 </div>
@@ -343,10 +425,14 @@ class MahajanaSampathaApp {
                         <span class="text-gray-600 dark:text-gray-400">Winner:</span>
                         <div class="font-medium text-gray-800 dark:text-white">${draw.winner ? draw.winner.firstName : 'No winner'}</div>
                     </div>
+                    <div class="md:col-span-2">
+                        <span class="text-gray-600 dark:text-gray-400">Total Participants:</span>
+                        <div class="font-medium text-gray-800 dark:text-white">${draw.totalUsers}</div>
+                    </div>
                 </div>
             </div>
             <div>
-                <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Participants (${draw.users.length})</h4>
+                <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">All Participants (${draw.users.length})</h4>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
@@ -473,6 +559,7 @@ class MahajanaSampathaApp {
                 break;
             case 'admin':
                 this.updateAdminForm();
+                this.updateParticipantsList();
                 break;
             case 'history':
                 this.updateHistoryDisplay();
@@ -552,6 +639,9 @@ class MahajanaSampathaApp {
         document.getElementById('minBetAmount').value = this.settings.minBetAmount;
         document.getElementById('maxBetAmount').value = this.settings.maxBetAmount;
         document.getElementById('winningPrize').value = this.settings.winningPrize;
+        
+        // Clear manual winner input
+        document.getElementById('manualWinnerNumber').value = '';
         
         if (this.currentDraw) {
             this.updateWinnerDisplay();
@@ -642,6 +732,7 @@ class MahajanaSampathaApp {
                     this.saveToStorage();
                     this.updateUI();
                     this.updateUsersTable();
+                    this.updateParticipantsList();
                     this.updateHistoryDisplay();
                     this.showToast('Data imported successfully', 'success');
                 } else {
@@ -673,6 +764,7 @@ class MahajanaSampathaApp {
             
             this.updateUI();
             this.updateUsersTable();
+            this.updateParticipantsList();
             this.updateHistoryDisplay();
             this.showLogin();
             this.showToast('All data cleared successfully', 'success');
@@ -762,8 +854,28 @@ class MahajanaSampathaApp {
             });
         });
 
-        document.getElementById('selectWinnerBtn').addEventListener('click', () => {
-            this.selectWinner();
+        // Manual winner selection
+        document.getElementById('selectManualWinnerBtn').addEventListener('click', () => {
+            const winningNumber = document.getElementById('manualWinnerNumber').value;
+            this.selectWinnerManually(winningNumber);
+        });
+
+        // Select winner from dropdown
+        document.getElementById('selectFromUsers').addEventListener('change', (e) => {
+            if (e.target.value) {
+                this.selectWinnerFromUser(e.target.value);
+                // Reset dropdown
+                e.target.value = '';
+            }
+        });
+
+        // Allow pressing Enter in manual winner input
+        document.getElementById('manualWinnerNumber').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const winningNumber = document.getElementById('manualWinnerNumber').value;
+                this.selectWinnerManually(winningNumber);
+            }
         });
 
         document.getElementById('finishDrawBtn').addEventListener('click', () => {
