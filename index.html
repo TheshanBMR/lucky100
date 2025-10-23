@@ -259,7 +259,7 @@
                 <div id="adminPage" class="page hidden">
                     <div class="mb-6">
                         <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Admin Panel</h1>
-                        <p class="text-gray-600 dark:text-gray-400">Manage draw settings and select winners</p>
+                        <p class="text-gray-600 dark:text-gray-400">Manage draw settings and select winners manually</p>
                     </div>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -308,10 +308,34 @@
                             <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Draw Actions</h2>
                             
                             <div class="space-y-4">
-                                <div class="flex space-x-4">
-                                    <button id="selectWinnerBtn" class="bg-green-600 hover:bg-green-700 text-white rounded-xl px-6 py-2 transition-colors duration-300 flex-1">
-                                        Select Winning Number
-                                    </button>
+                                <!-- Manual Winner Selection -->
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Winning Number Manually</label>
+                                        <div class="flex space-x-4">
+                                            <input type="number" id="manualWinnerNumber" placeholder="Enter winning number" class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                                            <button id="selectManualWinnerBtn" class="bg-green-600 hover:bg-green-700 text-white rounded-xl px-6 py-2 transition-colors duration-300 whitespace-nowrap">
+                                                Select Winner
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Or select from existing users -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Or select from participants</label>
+                                        <select id="selectFromUsers" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300">
+                                            <option value="">Select a participant</option>
+                                            <!-- Users will be populated here -->
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Current Participants -->
+                                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                                    <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Participants</h3>
+                                    <div id="participantsList" class="space-y-2 max-h-40 overflow-y-auto">
+                                        <!-- Participants will be listed here -->
+                                    </div>
                                 </div>
                                 
                                 <div id="winnerSection" class="hidden p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
@@ -324,6 +348,10 @@
                                         <div class="flex justify-between">
                                             <span class="text-blue-700 dark:text-blue-400">Winner Name:</span>
                                             <span class="font-semibold text-blue-800 dark:text-blue-300" id="winnerName">-</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-blue-700 dark:text-blue-400">Bet Amount:</span>
+                                            <span class="font-semibold text-blue-800 dark:text-blue-300" id="winnerBetAmount">-</span>
                                         </div>
                                         <div class="flex justify-between">
                                             <span class="text-blue-700 dark:text-blue-400">Prize Amount:</span>
@@ -526,3 +554,4 @@
 </body>
 
 </html>
+
